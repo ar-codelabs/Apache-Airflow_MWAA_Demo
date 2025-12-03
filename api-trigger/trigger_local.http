@@ -1,0 +1,28 @@
+### 로컬 Airflow DAG 트리거 (기본 실행)
+POST http://localhost:8080/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Basic airflow:airflow
+Content-Type: application/json
+
+{
+  "conf": {}
+}
+
+### 로컬 Airflow DAG 트리거 (특정 날짜)
+POST http://localhost:8080/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Basic airflow:airflow
+Content-Type: application/json
+
+{
+  "conf": {
+    "date": "2025-01-01",
+    "requested_by": "external-system"
+  }
+}
+
+### DAG 상태 확인
+GET http://localhost:8080/api/v1/dags/daily_order_report_pipeline
+Authorization: Basic airflow:airflow
+
+### DAG Run 목록 조회
+GET http://localhost:8080/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Basic airflow:airflow

@@ -1,0 +1,73 @@
+[
+  {
+    "order_id": "ORD-20250101-0001",
+    "order_date": "2025-01-01T09:12:00+09:00",
+    "customer_id": "CUST-001",
+    "store_id": "STORE-SEOUL-01",
+    "items": [
+      {
+        "product_id": "PROD-1001",
+        "product_name": "테스트 상품 A",
+        "category": "FOOD",
+        "unit_price": 12000,
+        "quantity": 2
+      },
+      {
+        "product_id": "PROD-1002",
+        "product_name": "테스트 상품 B",
+        "category": "DRINK",
+        "unit_price": 3000,
+        "quantity": 1
+      }
+    ],
+    "payment_method": "CARD",
+    "total_amount": 27000,
+    "currency": "KRW",
+    "status": "PAID"
+  },
+  {
+    "order_id": "ORD-20250101-0002",
+    "order_date": "2025-01-01T10:30:00+09:00",
+    "customer_id": "CUST-002",
+    "store_id": "STORE-SEOUL-02",
+    "items": [
+      {
+        "product_id": "PROD-1003",
+        "product_name": "테스트 상품 C",
+        "category": "FOOD",
+        "unit_price": 8000,
+        "quantity": 1
+      }
+    ],
+    "payment_method": "CASH",
+    "total_amount": 8000,
+    "currency": "KRW",
+    "status": "PAID"
+  },
+  {
+    "order_id": "ORD-20250101-0003",
+    "order_date": "2025-01-01T11:05:00+09:00",
+    "customer_id": "CUST-003",
+    "store_id": "STORE-BUSAN-01",
+    "items": [
+      {
+        "product_id": "PROD-1001",
+        "product_name": "테스트 상품 A",
+        "category": "FOOD",
+        "unit_price": 12000,
+        "quantity": 1
+      },
+      {
+        "product_id": "PROD-1004",
+        "product_name": "테스트 상품 D",
+        "category": "SNACK",
+        "unit_price": 1500,
+        "quantity": 3
+      }
+    ],
+    "payment_method": "CARD",
+    "total_amount": 16500,
+    "currency": "KRW",
+    "status": "PAID"
+  }
+]

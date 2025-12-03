@@ -1,0 +1,58 @@
+name: Sync DAGs to S3 for MWAA
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'dags/**'
+      - 'modules/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  MWAA_DAG_BUCKET: ${{ secrets.MWAA_DAG_BUCKET }}
+
+jobs:
+  sync-to-s3:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials using OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-session-name: GitHubActions-MWAA-Sync
+        aws-region: ${{ env.AWS_REGION }}
+    
+    # Alternative: Basic AWS credentials (if not using OIDC)
+    # - name: Configure AWS credentials
+    #   uses: aws-actions/configure-aws-credentials@v4
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Sync DAGs to S3
+      run: |
+        echo "Syncing DAGs to S3..."
+        aws s3 sync ./dags s3://${{ env.MWAA_DAG_BUCKET }}/dags/ --delete
+        echo "DAGs sync completed"
+    
+    - name: Sync modules to S3
+      run: |
+        echo "Syncing modules to S3..."
+        aws s3 sync ./modules s3://${{ env.MWAA_DAG_BUCKET }}/modules/ --delete
+        echo "Modules sync completed"
+    
+    - name: Verify sync
+      run: |
+        echo "Verifying S3 sync..."
+        aws s3 ls s3://${{ env.MWAA_DAG_BUCKET }}/dags/ --recursive
+        aws s3 ls s3://${{ env.MWAA_DAG_BUCKET }}/modules/ --recursive

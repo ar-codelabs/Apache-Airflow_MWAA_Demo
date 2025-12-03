@@ -1,0 +1,32 @@
+### MWAA 환경 DAG 트리거 (기본 실행)
+POST https://d2764627-a281-4cef-a44a-85f4f783121d-vpce.c68.airflow.us-east-1.on.aws/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Bearer {{MWAA_CLI_TOKEN}}
+Content-Type: application/json
+
+{
+  "conf": {}
+}
+
+### MWAA 환경 DAG 트리거 (특정 날짜)
+POST https://d2764627-a281-4cef-a44a-85f4f783121d-vpce.c68.airflow.us-east-1.on.aws/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Bearer {{MWAA_CLI_TOKEN}}
+Content-Type: application/json
+
+{
+  "conf": {
+    "date": "2025-01-01",
+    "requested_by": "production-system"
+  }
+}
+
+### MWAA DAG 상태 확인
+GET https://d2764627-a281-4cef-a44a-85f4f783121d-vpce.c68.airflow.us-east-1.on.aws/api/v1/dags/daily_order_report_pipeline
+Authorization: Bearer {{MWAA_CLI_TOKEN}}
+
+### MWAA DAG Run 목록 조회
+GET https://d2764627-a281-4cef-a44a-85f4f783121d-vpce.c68.airflow.us-east-1.on.aws/api/v1/dags/daily_order_report_pipeline/dagRuns
+Authorization: Bearer {{MWAA_CLI_TOKEN}}
+
+###
+# MWAA CLI Token 생성 방법:
+# aws mwaa create-cli-token --name mwaa-demo-env --region us-east-1
