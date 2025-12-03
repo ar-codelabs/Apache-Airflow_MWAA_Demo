@@ -1,4 +1,4 @@
-name: Sync DAGs to S3 for MWAA
+name: Deploy DAGs to S3
 
 on:
   push:
@@ -8,53 +8,38 @@ on:
       - 'modules/**'
   workflow_dispatch:
 
-env:
-  AWS_REGION: us-east-1
-  MWAA_DAG_BUCKET: ${{ secrets.MWAA_DAG_BUCKET }}
-
 jobs:
-  sync-to-s3:
+  deploy:
     runs-on: ubuntu-latest
-    
-    permissions:
-      id-token: write
-      contents: read
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Debug secrets
+    - name: Debug AWS Secrets
       run: |
-        echo "AWS_ACCESS_KEY_ID length: ${#AWS_ACCESS_KEY_ID}"
-        echo "AWS_SECRET_ACCESS_KEY length: ${#AWS_SECRET_ACCESS_KEY}"
-        echo "MWAA_DAG_BUCKET: $MWAA_DAG_BUCKET"
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        MWAA_DAG_BUCKET: ${{ secrets.MWAA_DAG_BUCKET }}
+        echo "AWS_ACCESS_KEY_ID exists: ${{ secrets.AWS_ACCESS_KEY_ID != '' }}"
+        echo "AWS_SECRET_ACCESS_KEY exists: ${{ secrets.AWS_SECRET_ACCESS_KEY != '' }}"
+        echo "MWAA_DAG_BUCKET: ${{ secrets.MWAA_DAG_BUCKET }}"
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: us-east-1
+    
+    - name: Test AWS connection
+      run: |
+        aws sts get-caller-identity
+        aws s3 ls s3://${{ secrets.MWAA_DAG_BUCKET }}/
     
     - name: Sync DAGs to S3
       run: |
-        echo "Syncing DAGs to S3..."
-        aws s3 sync ./dags s3://${{ env.MWAA_DAG_BUCKET }}/dags/ --delete
-        echo "DAGs sync completed"
-    
-    - name: Sync modules to S3
+        aws s3 sync ./dags s3://${{ secrets.MWAA_DAG_BUCKET }}/dags/ --delete
+        aws s3 sync ./modules s3://${{ secrets.MWAA_DAG_BUCKET }}/modules/ --delete
+        
+    - name: Verify deployment
       run: |
-        echo "Syncing modules to S3..."
-        aws s3 sync ./modules s3://${{ env.MWAA_DAG_BUCKET }}/modules/ --delete
-        echo "Modules sync completed"
-    
-    - name: Verify sync
-      run: |
-        echo "Verifying S3 sync..."
-        aws s3 ls s3://${{ env.MWAA_DAG_BUCKET }}/dags/ --recursive
-        aws s3 ls s3://${{ env.MWAA_DAG_BUCKET }}/modules/ --recursive
+        aws s3 ls s3://${{ secrets.MWAA_DAG_BUCKET }}/dags/ --recursive
+        aws s3 ls s3://${{ secrets.MWAA_DAG_BUCKET }}/modules/ --recursive
