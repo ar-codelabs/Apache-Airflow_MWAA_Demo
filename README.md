@@ -50,9 +50,8 @@ raw/orders_20251201.json → 집계 처리 → Bedrock 분석 → reports/report
 ├── .github/workflows/              # GitHub Actions
 │   └── github-actions-sync-to-s3.yml
 ├── dags/                           # Airflow DAG 파일
-│   └── daily_order_report_pipeline.py
-├── modules/                        # Python 모듈
-│   └── order_tasks/
+│   └── daily_order_report_pipeline.py                     
+│   └── order_tasks/                # Python 모듈
 │       ├── __init__.py
 │       ├── fetch_orders.py         # S3 데이터 읽기
 │       ├── aggregate_orders.py     # 데이터 집계
@@ -150,7 +149,7 @@ MWAA_DAG_BUCKET: your-s3-bucket-name
 ### 2. 자동 배포 흐름
 1. `main` 브랜치에 push
 2. GitHub Actions 자동 실행
-3. `dags/`, `modules/` 디렉토리를 S3에 동기화
+3. `dags/`디렉토리를 S3에 동기화
 4. MWAA가 자동으로 변경사항 반영
 
 ## 🔌 API 트리거 사용법
