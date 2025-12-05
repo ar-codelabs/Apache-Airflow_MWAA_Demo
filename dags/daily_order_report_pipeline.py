@@ -28,25 +28,25 @@ def daily_order_report_pipeline():
     
     @task
     def fetch_orders_task(**context):
-        """S3ì—ì„œ ì£¼ë¬¸ ë°ì´í„° ê°€ì ¸ì˜¤ê¸°"""
+        """S3°"""
         target_date = "2025-12-01"
         return fetch_orders_from_s3(target_date)
     
     @task
     def aggregate_orders_task(orders_data: list, **context):
-        """ì£¼ë¬¸ ë°ì´í„° ì§‘ê³„"""
+        """cal"""
         return aggregate_order_data(orders_data)
     
     @task
     def generate_report_task(agg_result: dict, **context):
-        """Bedrockì„ ì‚¬ìš©í•œ ë¦¬í¬íŠ¸ ìƒì„±"""
+        """Bedrock"""
         target_date = "2025-12-01"
         return generate_report_with_bedrock(agg_result, target_date)
     
-    # Task ì˜ì¡´ì„± ì„¤ì •
+    # Task 
     orders = fetch_orders_task()
     aggregated = aggregate_orders_task(orders)
     report = generate_report_task(aggregated)
 
-# DAG ì¸ìŠ¤í„´ìŠ¤ ìƒì„±
+# DAG 
 dag_instance = daily_order_report_pipeline()
